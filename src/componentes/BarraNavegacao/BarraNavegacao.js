@@ -35,6 +35,7 @@ import Videos from '../../paginas/videos/Videos';
 import Site from '../../paginas/site/Site';
 import MinhaConta from '../../paginas/conta/Conta';
 import PaginaLogin from '../PaginaLogin/PaginaLogin';
+import Mensagens from '../../paginas/contato/Mensagens';
 import { baseRoute } from '../../uteis/rota.json';
 import Config from '../../uteis/configuracao';
 
@@ -240,6 +241,7 @@ export default function BarraNavegacao(props) {
           <Route path={`${baseRoute}/videos`} component={Videos} />
           <Route path={`${baseRoute}/site`} component={Site} />
           <Route path={`${baseRoute}/minha-conta`} component={MinhaConta} />
+          <Route path={`${baseRoute}/contato`} component={Mensagens} />
         </Switch>
       </main>
     </div>
