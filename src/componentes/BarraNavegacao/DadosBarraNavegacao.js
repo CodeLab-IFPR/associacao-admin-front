@@ -69,4 +69,11 @@ export default [
     icone: <FaIcons.FaGlobe size={tamanho} />,
     classe: 'nav-text',
   },
+  {
+    texto: 'Documentos',
+    rota: `${baseRoute}/documentos`,
+    key: 'documentos',
+    icone: <FaIcons.FaAddressCard size={tamanho} />,
+    classe: 'nav-text',
+  },
 ];
