@@ -40,14 +40,14 @@ function Mensagens() {
   const { setLocation } = useNavigation();
   const [mensagens, setMensagens] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [order, setOrder] = useState('asc');
+  const [order, setOrder] = useState('desc');  // Alterado de 'asc' para 'desc'
   const [orderBy, setOrderBy] = useState('dataEnvio');
   const [search, setSearch] = useState('');
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [open, setOpen] = useState(false);
   const [selectedMessages, setSelectedMessages] = useState([]);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(5);  // Alterado para 5 como padrão
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [removing, setRemoving] = useState(false);
   const [messageToDelete, setMessageToDelete] = useState(null);
@@ -94,7 +94,7 @@ function Mensagens() {
     const newOrder = isAsc ? 'desc' : 'asc';
     setOrder(newOrder);
     setOrderBy(property);
-    setPage(0); // Resetar para primeira página ao mudar ordenação
+    setPage(0);
   };
 
   const handleSearchChange = event => {

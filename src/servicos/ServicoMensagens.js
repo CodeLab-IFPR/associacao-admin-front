@@ -3,10 +3,10 @@ import Config from '../uteis/configuracao';
 
 class ServicoMensagens {
   static async listarMensagens(
-    limite = 10,
+    limite = 5,
     pagina = 1,
     orderBy = 'dataEnvio',
-    order = 'DESC',
+    order = 'desc',
   ) {
     const response = await Axios.get(`${Config.api}/contato`, {
       params: { limite, pagina, orderBy, order },
