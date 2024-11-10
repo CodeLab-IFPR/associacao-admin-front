@@ -20,47 +20,24 @@ import {
   Box,
   InputAdornment,
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import DeleteIcon from '@material-ui/icons/Delete';
 import SearchIcon from '@material-ui/icons/Search';
+import MailIcon from '@material-ui/icons/Mail';
+import DraftsOutlinedIcon from '@material-ui/icons/DraftsOutlined';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import TablePagination from '@material-ui/core/TablePagination';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import LinearProgress from '@material-ui/core/LinearProgress';
 import ServicoMensagens from '../../servicos/ServicoMensagens';
 import { useNotify } from '../../contextos/Notificacao';
-
-const useStyles = makeStyles({
-  table: {
-    minWidth: 650,
-  },
-  search: {
-    marginBottom: 20,
-  },
-  wrapper: {
-    position: 'relative',
-  },
-  buttonProgress: {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    marginTop: -12,
-    marginLeft: -12,
-  },
-  dialogContent: {
-    width: '500px',
-    maxHeight: '400px',
-    overflowY: 'auto',
-  },
-  messageText: {
-    whiteSpace: 'pre-wrap',
-    wordBreak: 'break-word',
-  },
-});
+import { useNavigation } from '../../contextos/Navegacao';
+import Breadcrumbs from '../../componentes/Breadcrumbs/Breadcrumbs';
+import useStyles from './estilo.css';
 
 function Mensagens() {
-  const classes = useStyles();
+  const classes = useStyles;
   const notify = useNotify();
+  const { setLocation } = useNavigation();
   const [mensagens, setMensagens] = useState([]);
   const [loading, setLoading] = useState(false);
   const [order, setOrder] = useState('asc');
@@ -71,7 +48,6 @@ function Mensagens() {
   const [selectedMessages, setSelectedMessages] = useState([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [count, setCount] = useState(0);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [removing, setRemoving] = useState(false);
   const [messageToDelete, setMessageToDelete] = useState(null);
@@ -81,8 +57,14 @@ function Mensagens() {
     setLoading(true);
     try {
       const response = search
-        ? await ServicoMensagens.buscarPorTitulo(search, rowsPerPage, page + 1)
-        : await ServicoMensagens.listarMensagens(rowsPerPage, page + 1);
+        ? await ServicoMensagens.buscarPorNomeOuAssunto(
+            search,
+            rowsPerPage,
+            page + 1,
+            orderBy,
+            order,
+          )
+        : await ServicoMensagens.listarMensagens(rowsPerPage, page + 1, orderBy, order);
 
       setMensagens(response.rows || []);
       setTotalItems(response.count || 0);
@@ -93,16 +75,26 @@ function Mensagens() {
     } finally {
       setLoading(false);
     }
-  }, [search, page, rowsPerPage]);
+  }, [search, page, rowsPerPage, orderBy, order]);
 
   useEffect(() => {
     fetchMensagens();
   }, [fetchMensagens]);
 
+  useEffect(() => {
+    setLocation({
+      title: 'Gestão de Mensagens',
+      key: 'mensagens',
+      path: '/mensagens',
+    });
+  }, []);
+
   const handleRequestSort = property => {
     const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
+    const newOrder = isAsc ? 'desc' : 'asc';
+    setOrder(newOrder);
     setOrderBy(property);
+    setPage(0); // Resetar para primeira página ao mudar ordenação
   };
 
   const handleSearchChange = event => {
@@ -110,9 +102,16 @@ function Mensagens() {
     setPage(0);
   };
 
-  const handleViewMessage = mensagem => {
-    setSelectedMessage(mensagem);
-    setOpen(true);
+  const handleViewMessage = async mensagem => {
+    try {
+      await ServicoMensagens.marcarComoLida(mensagem.id);
+      // Atualiza o estado local da mensagem
+      setMensagens(mensagens.map(m => (m.id === mensagem.id ? { ...m, lida: true } : m)));
+      setSelectedMessage(mensagem);
+      setOpen(true);
+    } catch (error) {
+      notify.showError(error.message);
+    }
   };
 
   const handleClose = () => {
@@ -129,6 +128,44 @@ function Mensagens() {
       setSelectedMessages([]);
       notify.showSuccess('Mensagens excluídas com sucesso');
       await fetchMensagens(); // Recarrega a lista após excluir
+    } catch (error) {
+      notify.showError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleMarkAsRead = async () => {
+    if (selectedMessages.length === 0) return;
+
+    try {
+      setLoading(true);
+      await Promise.all(selectedMessages.map(id => ServicoMensagens.marcarComoLida(id)));
+      setMensagens(
+        mensagens.map(m => (selectedMessages.includes(m.id) ? { ...m, lida: true } : m)),
+      );
+      notify.showSuccess('Mensagens marcadas como lidas');
+      setSelectedMessages([]);
+    } catch (error) {
+      notify.showError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleMarkAsUnread = async () => {
+    if (selectedMessages.length === 0) return;
+
+    try {
+      setLoading(true);
+      await Promise.all(
+        selectedMessages.map(id => ServicoMensagens.marcarComoNaoLida(id)),
+      );
+      setMensagens(
+        mensagens.map(m => (selectedMessages.includes(m.id) ? { ...m, lida: false } : m)),
+      );
+      notify.showSuccess('Mensagens marcadas como não lidas');
+      setSelectedMessages([]);
     } catch (error) {
       notify.showError(error.message);
     } finally {
@@ -163,8 +200,89 @@ function Mensagens() {
     }
   };
 
+  const truncateText = (text, limit) => {
+    if (text.length <= limit) return text;
+    return text.substring(0, limit) + '...';
+  };
+
+  const renderTableContent = () => {
+    if (loading) {
+      return (
+        <TableRow>
+          <TableCell colSpan={6} align="center">
+            <LinearProgress />
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    if (mensagens.length === 0) {
+      return (
+        <TableRow>
+          <TableCell colSpan={6} align="center">
+            Nenhuma mensagem encontrada
+          </TableCell>
+        </TableRow>
+      );
+    }
+
+    return mensagens.map(mensagem => (
+      <TableRow key={mensagem.id} hover>
+        <TableCell padding="checkbox">
+          <Checkbox
+            checked={selectedMessages.includes(mensagem.id)}
+            onChange={event => handleSelectMessage(event, mensagem.id)}
+          />
+        </TableCell>
+        <TableCell padding="checkbox">
+          {mensagem.lida ? (
+            <DraftsOutlinedIcon style={{ color: '#9e9e9e' }} />
+          ) : (
+            <MailIcon color="primary" />
+          )}
+        </TableCell>
+        <TableCell>
+          <div style={{ fontSize: '14px' }}>
+            {new Date(mensagem.dataEnvio).toLocaleDateString()}
+          </div>
+          <div style={{ fontSize: '12px', color: '#666' }}>
+            {new Date(mensagem.dataEnvio).toLocaleTimeString([], {
+              hour: '2-digit',
+              minute: '2-digit',
+            })}
+          </div>
+        </TableCell>
+        <TableCell>{mensagem.nome}</TableCell>
+        <TableCell>{mensagem.assunto}</TableCell>
+        <TableCell>
+          <div style={{ marginLeft: '20px' }}>{truncateText(mensagem.mensagem, 40)}</div>
+        </TableCell>
+        <TableCell align="right">
+          <IconButton
+            size="small"
+            aria-label="visualizar"
+            onClick={() => handleViewMessage(mensagem)}
+          >
+            <VisibilityIcon fontSize="small" />
+          </IconButton>
+          <IconButton
+            size="small"
+            aria-label="deletar"
+            onClick={() => {
+              setMessageToDelete(mensagem);
+              setDeleteDialog(true);
+            }}
+          >
+            <DeleteIcon fontSize="small" />
+          </IconButton>
+        </TableCell>
+      </TableRow>
+    ));
+  };
+
   return (
     <Container>
+      <Breadcrumbs />
       <Box
         display="flex"
         flexDirection="row"
@@ -175,7 +293,7 @@ function Mensagens() {
         paddingTop="12px"
       >
         <TextField
-          placeholder="Buscar por título"
+          placeholder="Buscar por nome ou assunto"
           variant="outlined"
           size="small"
           style={{ width: '100%', maxWidth: '400px' }}
@@ -192,9 +310,30 @@ function Mensagens() {
         <Box display="flex" flexDirection="row" alignItems="center">
           <Button
             variant="contained"
+            color="primary"
+            startIcon={<MailIcon />}
+            onClick={handleMarkAsUnread}
+            disabled={selectedMessages.length === 0}
+            style={{ marginRight: '8px' }}
+          >
+            Marcar como não lida
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<DraftsOutlinedIcon />}
+            onClick={handleMarkAsRead}
+            disabled={selectedMessages.length === 0}
+            style={{ marginRight: '8px' }}
+          >
+            Marcar como lida
+          </Button>
+          <Button
+            variant="contained"
             color="secondary"
             startIcon={<DeleteIcon />}
             onClick={handleDeleteSelected}
+            disabled={selectedMessages.length === 0}
           >
             Excluir
           </Button>
@@ -204,7 +343,7 @@ function Mensagens() {
         <Table className={classes.table}>
           <TableHead>
             <TableRow>
-              <TableCell padding="checkbox">
+              <TableCell padding="checkbox" style={{ width: '48px' }}>
                 <Checkbox
                   indeterminate={
                     selectedMessages.length > 0 &&
@@ -222,7 +361,10 @@ function Mensagens() {
                   }}
                 />
               </TableCell>
-              <TableCell>
+              <TableCell padding="checkbox" style={{ width: '48px' }}>
+                Status
+              </TableCell>
+              <TableCell style={{ width: '180px' }}>
                 <TableSortLabel
                   active={orderBy === 'dataEnvio'}
                   direction={orderBy === 'dataEnvio' ? order : 'asc'}
@@ -231,7 +373,7 @@ function Mensagens() {
                   Data
                 </TableSortLabel>
               </TableCell>
-              <TableCell>
+              <TableCell style={{ width: '200px' }}>
                 <TableSortLabel
                   active={orderBy === 'nome'}
                   direction={orderBy === 'nome' ? order : 'asc'}
@@ -249,63 +391,15 @@ function Mensagens() {
                   Assunto
                 </TableSortLabel>
               </TableCell>
-              <TableCell align="right">Ações</TableCell>
+              <TableCell>
+                <TableSortLabel>Mensagem</TableSortLabel>
+              </TableCell>
+              <TableCell align="right" style={{ width: '120px' }}>
+                Ações
+              </TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
-            {(() => {
-              if (loading) {
-                return (
-                  <TableRow>
-                    <TableCell colSpan={3} align="center">
-                      <LinearProgress />
-                    </TableCell>
-                  </TableRow>
-                );
-              }
-              if (mensagens.length > 0) {
-                return mensagens.map(mensagem => (
-                  <TableRow key={mensagem.id}>
-                    <TableCell padding="checkbox">
-                      <Checkbox
-                        checked={selectedMessages.includes(mensagem.id)}
-                        onChange={event => handleSelectMessage(event, mensagem.id)}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      {new Date(mensagem.dataEnvio).toLocaleDateString()}
-                    </TableCell>
-                    <TableCell>{mensagem.nome}</TableCell>
-                    <TableCell>{mensagem.assunto}</TableCell>
-                    <TableCell align="right">
-                      <IconButton
-                        aria-label="visualizar"
-                        onClick={() => handleViewMessage(mensagem)}
-                      >
-                        <VisibilityIcon />
-                      </IconButton>
-                      <IconButton
-                        aria-label="deletar"
-                        onClick={() => {
-                          setMessageToDelete(mensagem);
-                          setDeleteDialog(true);
-                        }}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ));
-              }
-              return (
-                <TableRow>
-                  <TableCell colSpan={3} align="center">
-                    Nenhuma mensagem encontrada
-                  </TableCell>
-                </TableRow>
-              );
-            })()}
-          </TableBody>
+          <TableBody>{renderTableContent()}</TableBody>
         </Table>
       </TableContainer>
       {!loading && mensagens.length >= 1 && (
@@ -339,10 +433,12 @@ function Mensagens() {
                 <strong>Email:</strong> {selectedMessage.email}
               </p>
               <p>
-                <strong>Assunto:</strong> {selectedMessage.assunto}
+                <strong>Assunto:</strong> {truncateText(selectedMessage.assunto, 50)}
               </p>
-              <p className={classes.messageText}>
-                <strong>Mensagem:</strong> {selectedMessage.mensagem}
+              <p className={classes.messageText} style={{ whiteSpace: 'pre-wrap' }}>
+                <strong>Mensagem:</strong>
+                <br />
+                {selectedMessage.mensagem.replace(/(.{50})/g, '$1\n')}
               </p>
             </>
           )}
@@ -362,7 +458,7 @@ function Mensagens() {
           Excluir mensagem:
           {messageToDelete && (
             <span style={{ marginRight: '10px', marginLeft: '10px' }}>
-              {messageToDelete.assunto}
+              {truncateText(messageToDelete.assunto, 50)}
             </span>
           )}
         </DialogTitle>

@@ -10,7 +10,6 @@ import Config from '../../uteis/configuracao';
 const Profile = props => {
   const [dialogs, setdialogs] = useState(false);
   const [imgCrop, setimgeCrop] = useState('');
-  const [storeImage, setstoreImage] = useState([]);
 
   const onCrop = view => {
     setimgeCrop(view);
@@ -50,7 +49,7 @@ const Profile = props => {
       await Axios.delete(`${Config.api}/associados/deletarImagem/${props.id}`);
       setimgeCrop(null);
     } catch (error) {
-      console.error('Erro ao deletar a imagem:', error);
+      // console.error('Erro ao deletar a imagem:', error);
     }
   };
 
@@ -74,7 +73,7 @@ const Profile = props => {
         const imageUrl = `data:${response.headers['content-type']};base64,${base64Image}`;
         setimgeCrop(imageUrl);
       } catch (error) {
-        console.error('Erro ao buscar imagem:', error);
+        // console.error('Erro ao buscar imagem:', error);
       }
     };
 

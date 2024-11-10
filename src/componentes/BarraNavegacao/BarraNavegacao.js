@@ -96,7 +96,7 @@ export default function BarraNavegacao(props) {
 
         setImagem(imagemUrl);
       } catch (error) {
-        console.error('Erro ao carregar imagem:', error);
+        // console.error('Erro ao carregar imagem:', error);
       }
     };
 

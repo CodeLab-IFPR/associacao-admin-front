@@ -16,7 +16,6 @@ import {
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import 'date-fns';
-import Config from '../../uteis/configuracao';
 import ServicoAta from '../../servicos/ServicoAta';
 import { useNotify } from '../../contextos/Notificacao';
 import styles from './estilo.css';

@@ -23,17 +23,14 @@ import { Visibility, VisibilityOff, Person, Phone, Home } from '@material-ui/ico
 
 import InputMask from 'react-input-mask';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
-import md5 from 'md5';
 
 import 'date-fns';
 import DateFnsUtils from '@date-io/date-fns';
 import clsx from 'clsx';
-import { removeMask } from '../../uteis/string';
 
 import Breadcrumbs from '../../componentes/Breadcrumbs/Breadcrumbs';
 import ServicoAssociado from '../../servicos/ServicoAssociado';
 import ServicoAutenticacao from '../../servicos/ServicoAutenticacao';
-import { buscaCEP } from '../../servicos/ServicoCEP';
 import { useStyles } from './estilo';
 import { useNotify } from '../../contextos/Notificacao';
 import { useNavigation } from '../../contextos/Navegacao';
@@ -151,21 +148,6 @@ export default function CadastrarAssociado() {
       notify.showError(error.message);
     } finally {
       setSaving(false);
-    }
-  }
-
-  async function findAddress() {
-    try {
-      setSearching(true);
-      const unmaskedCEP = removeMask(cep);
-      const address = await buscaCEP(unmaskedCEP);
-
-      setEstado(address.estado);
-      setCidade(address.cidade);
-    } catch (error) {
-      notify.showError(error.response.data);
-    } finally {
-      setSearching(false);
     }
   }
 

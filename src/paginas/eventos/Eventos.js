@@ -7,7 +7,6 @@ import {
   CardContent,
   CardMedia,
   CardActions,
-  Link,
   IconButton,
   Container,
   TableRow,
@@ -35,7 +34,6 @@ import {
 import CadastrarEvento from '../../componentes/CadastrarEvento/CadastrarEvento';
 import ServicoEvento from '../../servicos/ServicoEvento';
 import Breadcrumbs from '../../componentes/Breadcrumbs/Breadcrumbs';
-import Config from '../../uteis/configuracao';
 import styles from './estilo.css';
 import { useNotify } from '../../contextos/Notificacao';
 import { useNavigation } from '../../contextos/Navegacao';

@@ -19,7 +19,6 @@ import {
 } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import GetAppIcon from '@material-ui/icons/GetApp';
-import VisibilityIcon from '@material-ui/icons/Visibility';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 
@@ -32,7 +31,6 @@ import {
   Search as SearchIcon,
 } from '@material-ui/icons';
 
-import Config from '../../uteis/configuracao';
 import CadastrarClassificado from '../../componentes/CadastrarClassificado/CadastrarClassificado';
 import ServicoClassificado from '../../servicos/ServicoClassificado';
 import Breadcrumbs from '../../componentes/Breadcrumbs/Breadcrumbs';
