@@ -1,22 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
-  Paper,
   Checkbox,
-  Avatar,
   IconButton,
   Container,
-  TableContainer,
-  Table,
-  TableBody,
-  TableHead,
   TableRow,
   TableCell,
   TablePagination,
   Button,
   LinearProgress,
   CircularProgress,
-  colors,
   InputAdornment,
   Grid,
   Card,
@@ -25,17 +18,12 @@ import {
   CardActions,
 } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
-import GetAppIcon from '@material-ui/icons/GetApp';
-import VisibilityIcon from '@material-ui/icons/Visibility';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import YouTube from 'react-youtube';
 import CloseIcon from '@material-ui/icons/Close';
-
-import InputMask from 'react-input-mask';
 
 import {
   Edit as EditIcon,
@@ -43,10 +31,6 @@ import {
   Delete as DeleteIcon,
   Search as SearchIcon,
 } from '@material-ui/icons';
-import { FaWhatsapp } from 'react-icons/fa';
-
-import { useDebouncedCallback } from 'use-debounce';
-import Config from '../../uteis/configuracao';
 import CadastrarVideo from '../../componentes/CadastrarVideo/CadastrarVideo';
 import ServicoVideo from '../../servicos/ServicoVideo';
 import Breadcrumbs from '../../componentes/Breadcrumbs/Breadcrumbs';

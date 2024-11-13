@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
   Paper,
-  Avatar,
   IconButton,
   Container,
   TableContainer,
@@ -15,7 +14,6 @@ import {
   Button,
   LinearProgress,
   CircularProgress,
-  colors,
   InputAdornment,
   Checkbox,
 } from '@material-ui/core';
@@ -24,11 +22,7 @@ import GetAppIcon from '@material-ui/icons/GetApp';
 import VisibilityIcon from '@material-ui/icons/Visibility';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
-
-import InputMask from 'react-input-mask';
 
 import {
   Edit as EditIcon,
@@ -36,10 +30,7 @@ import {
   Delete as DeleteIcon,
   Search as SearchIcon,
 } from '@material-ui/icons';
-import { FaWhatsapp } from 'react-icons/fa';
 
-import { useDebouncedCallback } from 'use-debounce';
-import Config from '../../uteis/configuracao';
 import CadastrarAta from '../../componentes/CadastrarAta/CadastrarAta';
 import ServicoAta from '../../servicos/ServicoAta';
 import Breadcrumbs from '../../componentes/Breadcrumbs/Breadcrumbs';
