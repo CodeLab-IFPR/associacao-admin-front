@@ -104,6 +104,8 @@ export default function BarraNavegacao(props) {
     carregarImagem();
   }, [props.id]);
 
+  const itensNavegacao = DadosBarraNavegacao();
+
   return (
     <div className={classes.root}>
       <CssBaseline />
@@ -210,18 +212,19 @@ export default function BarraNavegacao(props) {
         </div>
         <Divider />
         <List>
-          {DadosBarraNavegacao.map(item => (
-            <ListItem
-              to={item.rota}
-              key={item.texto}
-              selected={item.key === location.key}
-              component={Link}
-              className={classes.link}
-            >
-              <ListItemIcon>{item.icone} </ListItemIcon>
-              <ListItemText primary={item.texto} />
-            </ListItem>
-          ))}
+          {Array.isArray(itensNavegacao) &&
+            itensNavegacao.map(item => (
+              <ListItem
+                to={item.rota}
+                key={item.texto}
+                selected={item.key === location.key}
+                component={Link}
+                className={classes.link}
+              >
+                <ListItemIcon>{item.icone} </ListItemIcon>
+                <ListItemText primary={item.texto} />
+              </ListItem>
+            ))}
         </List>
       </Drawer>
       <main
