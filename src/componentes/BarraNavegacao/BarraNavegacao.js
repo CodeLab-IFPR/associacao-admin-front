@@ -35,6 +35,7 @@ import Videos from '../../paginas/videos/Videos';
 import Site from '../../paginas/site/Site';
 import MinhaConta from '../../paginas/conta/Conta';
 import PaginaLogin from '../PaginaLogin/PaginaLogin';
+import Mensagens from '../../paginas/contato/Mensagens';
 import { baseRoute } from '../../uteis/rota.json';
 import Config from '../../uteis/configuracao';
 import Documentos from '../../paginas/documento/Documento';
@@ -96,7 +97,7 @@ export default function BarraNavegacao(props) {
 
         setImagem(imagemUrl);
       } catch (error) {
-        console.error('Erro ao carregar imagem:', error);
+        // console.error('Erro ao carregar imagem:', error);
       }
     };
 
@@ -242,6 +243,7 @@ export default function BarraNavegacao(props) {
           <Route path={`${baseRoute}/site`} component={Site} />
           <Route path={`${baseRoute}/minha-conta`} component={MinhaConta} />
           <Route path={`${baseRoute}/documentos`} component={Documentos} />
+          <Route path={`${baseRoute}/contato`} component={Mensagens} />
         </Switch>
       </main>
     </div>

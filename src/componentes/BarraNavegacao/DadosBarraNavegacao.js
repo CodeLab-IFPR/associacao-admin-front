@@ -76,4 +76,11 @@ export default [
     icone: <FaIcons.FaAddressCard size={tamanho} />,
     classe: 'nav-text',
   },
+  {
+    texto: 'Mensagens',
+    rota: `${baseRoute}/contato`,
+    key: 'contato',
+    icone: <FaIcons.FaEnvelope size={tamanho} />,
+    classe: 'nav-text',
+  },
 ];

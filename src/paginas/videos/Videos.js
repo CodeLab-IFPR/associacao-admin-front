@@ -1,22 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
-  Paper,
   Checkbox,
-  Avatar,
   IconButton,
   Container,
-  TableContainer,
-  Table,
-  TableBody,
-  TableHead,
   TableRow,
   TableCell,
   TablePagination,
   Button,
   LinearProgress,
   CircularProgress,
-  colors,
   InputAdornment,
   Grid,
   Card,
@@ -25,17 +18,12 @@ import {
   CardActions,
 } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
-import GetAppIcon from '@material-ui/icons/GetApp';
-import VisibilityIcon from '@material-ui/icons/Visibility';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import YouTube from 'react-youtube';
 import CloseIcon from '@material-ui/icons/Close';
-
-import InputMask from 'react-input-mask';
 
 import {
   Edit as EditIcon,
@@ -43,10 +31,6 @@ import {
   Delete as DeleteIcon,
   Search as SearchIcon,
 } from '@material-ui/icons';
-import { FaWhatsapp } from 'react-icons/fa';
-
-import { useDebouncedCallback } from 'use-debounce';
-import Config from '../../uteis/configuracao';
 import CadastrarVideo from '../../componentes/CadastrarVideo/CadastrarVideo';
 import ServicoVideo from '../../servicos/ServicoVideo';
 import Breadcrumbs from '../../componentes/Breadcrumbs/Breadcrumbs';
@@ -299,25 +283,27 @@ function Videos() {
           return (
             <Grid>
               <TableCell colSpan={3} align="center">
-                Nenhuma ata encontrada
+                Nenhum vídeo encontrado.
               </TableCell>
             </Grid>
           );
         })()}
       </Grid>
-      <TablePagination
-        rowsPerPageOptions={[3, 6, 12, 24]}
-        component="div"
-        count={count}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={(event, newPage) => setPage(newPage)}
-        onRowsPerPageChange={event => {
-          setRowsPerPage(parseInt(event.target.value, 10));
-          setPage(0);
-        }}
-        disabled={loading}
-      />
+      {!loading && videos.length >= 1 && (
+        <TablePagination
+          rowsPerPageOptions={[3, 6, 12, 24]}
+          component="div"
+          count={count || 0}
+          rowsPerPage={rowsPerPage}
+          page={page || 0}
+          onPageChange={(event, newPage) => setPage(newPage)}
+          onRowsPerPageChange={event => {
+            setRowsPerPage(parseInt(event.target.value, 10));
+            setPage(0);
+          }}
+          disabled={loading}
+        />
+      )}
       <CadastrarVideo
         open={open}
         video={videoSelecionado}

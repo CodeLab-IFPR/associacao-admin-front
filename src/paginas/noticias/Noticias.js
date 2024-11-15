@@ -1,39 +1,27 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   Box,
-  Paper,
   Checkbox,
   Card,
   Grid,
   CardContent,
   CardMedia,
   CardActions,
-  Avatar,
   IconButton,
   Container,
-  TableContainer,
-  Table,
-  TableBody,
-  TableHead,
   TableRow,
   TableCell,
   TablePagination,
   Button,
   LinearProgress,
   CircularProgress,
-  colors,
   InputAdornment,
 } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
-import VisibilityIcon from '@material-ui/icons/Visibility';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import ReactQuill from 'react-quill';
-
-import InputMask from 'react-input-mask';
 
 import {
   Edit as EditIcon,
@@ -41,10 +29,7 @@ import {
   Delete as DeleteIcon,
   Search as SearchIcon,
 } from '@material-ui/icons';
-import { FaWhatsapp } from 'react-icons/fa';
 
-import { useDebouncedCallback } from 'use-debounce';
-import Config from '../../uteis/configuracao';
 import CadastrarNoticia from '../../componentes/CadastrarNoticia/CadastrarNoticia';
 import ServicoNoticia from '../../servicos/ServicoNoticia';
 import Breadcrumbs from '../../componentes/Breadcrumbs/Breadcrumbs';
@@ -318,19 +303,21 @@ function Noticias() {
           );
         })()}
       </Grid>
-      <TablePagination
-        rowsPerPageOptions={[3, 6, 12, 24]}
-        component="div"
-        count={count}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={(event, newPage) => setPage(newPage)}
-        onRowsPerPageChange={event => {
-          setRowsPerPage(parseInt(event.target.value, 10));
-          setPage(0);
-        }}
-        disabled={loading}
-      />
+      {!loading && noticias.length >= 1 && (
+        <TablePagination
+          rowsPerPageOptions={[3, 6, 12, 24]}
+          component="div"
+          count={count || 0}
+          rowsPerPage={rowsPerPage}
+          page={page || 0}
+          onPageChange={(event, newPage) => setPage(newPage)}
+          onRowsPerPageChange={event => {
+            setRowsPerPage(parseInt(event.target.value, 10));
+            setPage(0);
+          }}
+          disabled={loading}
+        />
+      )}
       <CadastrarNoticia
         open={open}
         noticia={noticiaSelecionado}

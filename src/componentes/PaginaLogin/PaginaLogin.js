@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
-import { FormatAlignCenter, Visibility, VisibilityOff } from '@material-ui/icons';
+import { Visibility, VisibilityOff } from '@material-ui/icons';
 import {
   Grid,
   Box,
   Paper,
-  Avatar,
   TextField,
   OutlinedInput,
   InputAdornment,
