@@ -24,8 +24,6 @@ import 'react-quill/dist/quill.snow.css';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 
 import 'date-fns';
-import Axios from 'axios';
-import Config from '../../uteis/configuracao';
 import ServicoNoticia from '../../servicos/ServicoNoticia';
 import { useNotify } from '../../contextos/Notificacao';
 import styles from './estilo.css';
@@ -38,7 +36,6 @@ function CadastrarNoticia(props) {
   const [titulo, setTitulo] = useState('');
   const [descricao, setDescricao] = useState('');
   const [data_inicio, setDataInicio] = useState('');
-  const { fecharFormulario, onSave } = props;
 
   function setNoticiaState() {
     const { noticia } = props;

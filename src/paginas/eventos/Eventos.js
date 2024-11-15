@@ -7,7 +7,6 @@ import {
   CardContent,
   CardMedia,
   CardActions,
-  Link,
   IconButton,
   Container,
   TableRow,
@@ -35,7 +34,6 @@ import {
 import CadastrarEvento from '../../componentes/CadastrarEvento/CadastrarEvento';
 import ServicoEvento from '../../servicos/ServicoEvento';
 import Breadcrumbs from '../../componentes/Breadcrumbs/Breadcrumbs';
-import Config from '../../uteis/configuracao';
 import styles from './estilo.css';
 import { useNotify } from '../../contextos/Notificacao';
 import { useNavigation } from '../../contextos/Navegacao';
@@ -325,25 +323,27 @@ function Eventos() {
           return (
             <Grid>
               <TableCell colSpan={3} align="center">
-                Nenhuma ata encontrada
+                Nenhum evento encontrado
               </TableCell>
             </Grid>
           );
         })()}
       </Grid>
-      <TablePagination
-        rowsPerPageOptions={[3, 6, 12, 24]}
-        component="div"
-        count={count}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={(event, newPage) => setPage(newPage)}
-        onRowsPerPageChange={event => {
-          setRowsPerPage(parseInt(event.target.value, 10));
-          setPage(0);
-        }}
-        disabled={loading}
-      />
+      {!loading && eventos.length >= 1 && (
+        <TablePagination
+          rowsPerPageOptions={[3, 6, 12, 24]}
+          component="div"
+          count={count || 0}
+          rowsPerPage={rowsPerPage}
+          page={page || 0}
+          onPageChange={(event, newPage) => setPage(newPage)}
+          onRowsPerPageChange={event => {
+            setRowsPerPage(parseInt(event.target.value, 10));
+            setPage(0);
+          }}
+          disabled={loading}
+        />
+      )}
       <CadastrarEvento
         open={open}
         evento={eventoSelecionado}

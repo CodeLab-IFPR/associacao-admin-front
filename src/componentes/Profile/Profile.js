@@ -10,7 +10,6 @@ import Config from '../../uteis/configuracao';
 const Profile = props => {
   const [dialogs, setdialogs] = useState(false);
   const [imgCrop, setimgeCrop] = useState('');
-  const [storeImage, setstoreImage] = useState([]);
 
   const onCrop = view => {
     setimgeCrop(view);
@@ -50,7 +49,7 @@ const Profile = props => {
       await Axios.delete(`${Config.api}/associados/deletarImagem/${props.id}`);
       setimgeCrop(null);
     } catch (error) {
-      console.error('Erro ao deletar a imagem:', error);
+      // console.error('Erro ao deletar a imagem:', error);
     }
   };
 
@@ -74,7 +73,7 @@ const Profile = props => {
         const imageUrl = `data:${response.headers['content-type']};base64,${base64Image}`;
         setimgeCrop(imageUrl);
       } catch (error) {
-        console.error('Erro ao buscar imagem:', error);
+        // console.error('Erro ao buscar imagem:', error);
       }
     };
 
@@ -112,21 +111,20 @@ const Profile = props => {
             />
           </button>
 
-          <div>
-            <IconButton
-              aria-label="deletar"
-              onClick={deletarImagemPerfil}
+          <div className="relative-parent">
+            <div
               style={{
-                position: 'absolute',
-                top: '240px',
-                right: '500px',
+                display: 'flex',
+                position: 'relative',
+                justifyContent: 'right',
+                top: '-20px',
+                left: '30px',
               }}
             >
-              <DeleteIcon
-                color="secondary"
-                style={{ fontSize: '35px', marginLeft: '20px' }}
-              />
-            </IconButton>
+              <IconButton aria-label="deletar" onClick={deletarImagemPerfil}>
+                <DeleteIcon color="secondary" style={{ fontSize: '35px' }} />
+              </IconButton>
+            </div>
           </div>
 
           <Dialog open={dialogs} onClose={() => setdialogs(false)}>
