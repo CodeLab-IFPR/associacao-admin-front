@@ -70,6 +70,13 @@ export default [
     classe: 'nav-text',
   },
   {
+    texto: 'Documentos',
+    rota: `${baseRoute}/documentos`,
+    key: 'documentos',
+    icone: <FaIcons.FaAddressCard size={tamanho} />,
+    classe: 'nav-text',
+  },
+  {
     texto: 'Mensagens',
     rota: `${baseRoute}/contato`,
     key: 'contato',
