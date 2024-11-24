@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/admin/static/css/main.9cfe85db.chunk.css",
+    "main.js": "/admin/static/js/main.f67fc8ac.chunk.js",
+    "main.js.map": "/admin/static/js/main.f67fc8ac.chunk.js.map",
+    "runtime-main.js": "/admin/static/js/runtime-main.d48f3321.js",
+    "runtime-main.js.map": "/admin/static/js/runtime-main.d48f3321.js.map",
+    "static/css/2.f83b9687.chunk.css": "/admin/static/css/2.f83b9687.chunk.css",
+    "static/js/2.ade4c75c.chunk.js": "/admin/static/js/2.ade4c75c.chunk.js",
+    "static/js/2.ade4c75c.chunk.js.map": "/admin/static/js/2.ade4c75c.chunk.js.map",
+    "index.html": "/admin/index.html",
+    "static/css/2.f83b9687.chunk.css.map": "/admin/static/css/2.f83b9687.chunk.css.map",
+    "static/css/main.9cfe85db.chunk.css.map": "/admin/static/css/main.9cfe85db.chunk.css.map",
+    "static/js/2.ade4c75c.chunk.js.LICENSE.txt": "/admin/static/js/2.ade4c75c.chunk.js.LICENSE.txt",
+    "static/media/logo-amaer.png": "/admin/static/media/logo-amaer.f9760dff.png",
+    "static/media/logo-black.6ce3d84c.png": "/admin/static/media/logo-black.6ce3d84c.png"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.d48f3321.js",
+    "static/css/2.f83b9687.chunk.css",
+    "static/js/2.ade4c75c.chunk.js",
+    "static/css/main.9cfe85db.chunk.css",
+    "static/js/main.f67fc8ac.chunk.js"
+  ]
+}
