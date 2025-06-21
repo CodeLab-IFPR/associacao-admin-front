@@ -242,20 +242,14 @@ function Noticias() {
                     <h2
                       style={{
                         fontFamily: 'Arial',
-                        wordWrap: 'break-word',
+                        overflow: 'hidden',
+                        display: '-webkit-box',
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: 'vertical',
                       }}
                     >
                       Título: {noticia.titulo}
                     </h2>
-                    <ReactQuill
-                      value={
-                        noticia.descricao.length > 129
-                          ? `${noticia.descricao.substring(0, 129)}...`
-                          : noticia.descricao
-                      }
-                      readOnly
-                      theme={null}
-                    />
                     <p
                       style={{
                         fontFamily: 'Arial',
