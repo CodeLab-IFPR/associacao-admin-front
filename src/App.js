@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
-
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@material-ui/core/styles';
 import { ptBR } from '@material-ui/core/locale';
 import BarraNavegacao from './componentes/BarraNavegacao/BarraNavegacao';
 import PaginaLogin from './componentes/PaginaLogin/PaginaLogin';
-
+import EsqueceuSuaSenha from './componentes/EsqueceuSuaSenha/EsqueceuSuaSenha';
 import { NotificationProvider } from './contextos/Notificacao';
 import { NavigationProvider } from './contextos/Navegacao';
-
 import ServicoAutenticacao from './servicos/ServicoAutenticacao';
 import { parseJWT } from './uteis/string';
+import { baseRoute } from './uteis/rota.json';
+import AlterarSenha from './componentes/AlterarSenha/AlterarSenha';
 
 const App = () => {
   // Nova forma de definir a state [valor, função que atualiza o valor] = useState('valor inicial')
@@ -21,7 +21,6 @@ const App = () => {
   useEffect(() => {
     validarToken();
     const interval = setInterval(() => validarToken(), 60 * 5000);
-
     return () => {
       clearInterval(interval);
     };
@@ -49,7 +48,23 @@ const App = () => {
     </div>
   );
 
-  const usuarioNaoLogado = () => <PaginaLogin />;
+  const usuarioNaoLogado = () => (
+    <Router>
+      <Switch>
+        <Route
+          exact
+          path={`${baseRoute}/esqueceu-sua-senha`}
+          component={EsqueceuSuaSenha}
+        />
+        <Route
+          exact
+          path={`${baseRoute}/alterar-senha/:token`}
+          component={AlterarSenha}
+        />
+        <Route path="/" component={PaginaLogin} />
+      </Switch>
+    </Router>
+  );
 
   // Definição do tema e linguagem padrão
   const theme = createTheme(

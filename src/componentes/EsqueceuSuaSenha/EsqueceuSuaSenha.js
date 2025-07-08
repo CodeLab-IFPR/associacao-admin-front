@@ -16,30 +16,35 @@ import {
 } from '@material-ui/core';
 import clsx from 'clsx';
 
-import { forgotPassword } from '../../uteis/rota.json';
+import { baseRoute } from '../../uteis/rota.json';
 import { useStyles } from './estilo';
 import { useNotify } from '../../contextos/Notificacao';
 import ServicoAutenticacao from '../../servicos/ServicoAutenticacao';
 import LogoBlack from '../../assets/logo-black.png';
 
-export default function PaginaLogin() {
+export default function EsqueceuSuaSenha() {
   const classes = useStyles();
   const notify = useNotify();
   const [loading, setLoading] = useState(false);
-  const [values, setValues] = useState({
+  const [valores, setValores] = useState({
     email: '',
-    senha: '',
+    novaSenha: '',
+    confirmarNovaSenha: '',
     mostrarSenha: false,
   });
 
-  const logar = async event => {
+  const solicitarAlteracaoSenha = async event => {
+    if (valores.novaSenha !== valores.confirmarNovaSenha) return;
+
     event.preventDefault();
     try {
       setLoading(true);
       const Servico = new ServicoAutenticacao();
-      await Servico.logar(values);
-
-      window.location.replace('/admin/');
+      await Servico.solicitarAlteracaoSenha({
+        email: valores.email,
+        senha: valores.novaSenha,
+      });
+      notify.showSuccess('Cheque seu e-mail para continuar a alteração.');
     } catch (e) {
       notify.showError(e.message);
     } finally {
@@ -48,60 +53,25 @@ export default function PaginaLogin() {
   };
 
   const handleChange = prop => event => {
-    setValues({ ...values, [prop]: event.target.value });
-  };
-
-  const handleClickShowPassword = () => {
-    setValues({ ...values, mostrarSenha: !values.mostrarSenha });
-  };
-
-  const handleMouseDownPassword = event => {
-    event.preventDefault();
+    setValores({ ...valores, [prop]: event.target.value });
   };
 
   return (
     <Box className={classes.container}>
       <Paper elevation={10} className={classes.paper}>
-        <form autoComplete="off" onSubmit={logar}>
+        <form autoComplete="off" onSubmit={solicitarAlteracaoSenha}>
           <Grid align="center" style={{ marginBottom: '5px' }}>
             <img src={LogoBlack} alt="Logo Amaer" width="300px" />
           </Grid>
-          <h2 style={{ margin: '14px 0' }}>Autenticação</h2>
+          <h2 style={{ margin: '14px 0' }}>Alterar Senha</h2>
           <TextField
             label="E-mail"
             variant="outlined"
             fullWidth
             required
-            value={values.email}
+            value={valores.email}
             onChange={handleChange('email')}
           />
-          <div style={{ height: 20 }} />
-          <FormControl className={clsx(classes.margin)} variant="outlined" fullWidth>
-            <InputLabel required htmlFor="outlined-adornment-password">
-              Senha
-            </InputLabel>
-            <OutlinedInput
-              id="outlined-adornment-password"
-              type={values.mostrarSenha ? 'text' : 'password'}
-              value={values.senha}
-              required
-              onChange={handleChange('senha')}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
-                    onMouseDown={handleMouseDownPassword}
-                    edge="end"
-                  >
-                    {values.mostrarSenha ? <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              }
-              labelWidth={70}
-            />
-            <Link href={forgotPassword}>Esqueceu sua senha?</Link>
-          </FormControl>
           <div style={{ height: 20 }} />
           <div className={classes.wrapper}>
             <Button
@@ -111,7 +81,7 @@ export default function PaginaLogin() {
               fullWidth
               disabled={loading}
             >
-              Entrar
+              Solicitar Alteração
             </Button>
             {loading && <CircularProgress size={24} className={classes.buttonProgress} />}
           </div>
