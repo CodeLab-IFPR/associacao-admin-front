@@ -1,3 +1,4 @@
 {
-    "baseRoute": "/admin"
+  "baseRoute": "/admin",
+  "forgotPassword": "/admin/esqueceu-sua-senha"
 }
