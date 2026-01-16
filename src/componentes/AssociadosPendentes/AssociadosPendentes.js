@@ -8,18 +8,18 @@ import {
   Avatar,
   Button,
   LinearProgress,
-  CircularProgress,
 } from '@material-ui/core';
-import { Check, Delete } from '@material-ui/icons';
 import { useNotify } from '../../contextos/Notificacao';
 import { useStyles } from './estilo';
 import ServicoAssociado from '../../servicos/ServicoAssociado';
+import ModalConfirm from './AssociadosModal';
 
 const AssociadosPendentes = () => {
   const [pendentes, setPendentes] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [removing, setRemoving] = useState([]);
-  const [accepting, setAccepting] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+  const [associadoEscolhido, setAssociadoEscolhido] = useState(null);
+
   const notify = useNotify();
 
   async function loadPendings() {
@@ -46,6 +46,16 @@ const AssociadosPendentes = () => {
     } catch (error) {
       notify.showError('Falha ao aceitar associado');
     }
+  }
+
+  async function handleOpenDialog(associado) {
+    setAssociadoEscolhido(associado);
+    setIsOpen(true);
+  }
+
+  function handleCloseDialog() {
+    setIsOpen(false);
+    setAssociadoEscolhido(null);
   }
 
   async function handleRemove(associado) {
@@ -125,46 +135,22 @@ const AssociadosPendentes = () => {
                     borderColor: '#8c8c8c',
                     color: '#8c8c8c',
                   }}
-                  onClick={() => handleRemove(associado)}
+                  onClick={() => handleOpenDialog(associado)}
                 >
-                  <Delete fontSize="small" htmlColor="#8c8c8c" />
-                  Excluir
+                  Ver dados
                 </Button>
 
-                {removing.includes(associado._id) && (
-                  <CircularProgress
-                    size={20}
-                    color="primary"
-                    thickness={4}
-                    className={classes.buttonProgress}
-                  />
-                )}
-              </div>
-
-              <div style={{ position: 'relative' }}>
-                <Button
-                  variant="outlined"
-                  size="small"
-                  disabled={accepting.includes(associado._id)}
-                  style={{ borderColor: '#009933', color: '#009933' }}
-                  onClick={() => handleAccept(associado)}
-                >
-                  <Check fontSize="small" htmlColor="#009933" />
-                  Aceitar
-                </Button>
-
-                {accepting.includes(associado._id) && (
-                  <CircularProgress
-                    size={20}
-                    color="primary"
-                    thickness={4}
-                    className={classes.buttonProgress}
-                  />
-                )}
               </div>
             </div>
           </Box>
         ))}
+        <ModalConfirm
+          open={isOpen && !!associadoEscolhido}
+          confirm={() => handleAccept(associadoEscolhido)}
+          exclude={() => handleRemove(associadoEscolhido)}
+          cancel={handleCloseDialog}
+          associado={associadoEscolhido}
+        />
       </CardContent>
     </Card>
   );
